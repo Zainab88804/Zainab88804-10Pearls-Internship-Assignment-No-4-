@@ -106,6 +106,6 @@ All major requests passed successfully
 
 One failing test case (book type = science) is intentional, as required in assignment instructions
 
-THIS README includes
+# THIS README includes
 Postan json file
 A detailed step-by-step guide (with all requests, variables, scripts, and verification steps) is provided in the attached PDF file
