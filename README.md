@@ -5,7 +5,7 @@ Project Overview
 This project demonstrates API testing using Postman collections with multiple HTTP methods.
 We tested the Simple Books API and JSONPlaceholder API by creating, updating, retrieving, and deleting resources.
 
-🎯 Learning Objectives
+# Learning Objectives
 
 Through this assignment, the following objectives were achieved:
 
@@ -23,7 +23,7 @@ Chaining APIs by passing values between requests
 
 Executing the full collection with Collection Runner
 
-🛠️ Tools & Technologies
+# Tools & Technologies
 
 Postman
 
@@ -31,7 +31,7 @@ Simple Books API → https://simple-books-api.glitch.me
 
 JSONPlaceholder → https://jsonplaceholder.typicode.com
 
-✅ Tasks Completed
+# Tasks Completed
 
 Used all HTTP methods (GET, POST, PUT, PATCH, DELETE)
 
@@ -49,7 +49,7 @@ Chained APIs using variables (e.g., orderId, accessToken)
 
 Ran entire collection with Collection Runner
 
-📂 Requests in Collection
+# Requests in Collection
 1. GET /books
 
 Fetch list of books
@@ -100,7 +100,7 @@ Demonstration of PUT (full update)
 
 Used random title
 
-📊 Test Results
+# Test Results
 
 All major requests passed successfully
 
