@@ -1,0 +1,737 @@
+{
+	"info": {
+		"_postman_id": "6be6b81c-0929-42ef-9a5e-7c7f664ee7e4",
+		"name": "Assignment4_API_Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48948268",
+		"_collection_link": "https://zainabcyber100-629567.postman.co/workspace/Zainab-Arif's-Workspace~672cbab5-58e4-43ad-8573-1d19adbf6ab3/collection/48948268-6be6b81c-0929-42ef-9a5e-7c7f664ee7e4?action=share&source=collection_link&creator=48948268"
+	},
+	"item": [
+		{
+			"name": "01 - GET /status",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is JSON\", () => {\r",
+							"  pm.expect(() => pm.response.json()).not.to.throw();\r",
+							"});\r",
+							"\r",
+							"console.log(\"Status response:\", pm.response.json());\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02 - GET /books (list books)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Books list retrieved\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Parse JSON response\r",
+							"let books = pm.response.json();\r",
+							"\r",
+							"// Console mein print karo\r",
+							"console.log(\"Books:\", books);\r",
+							"\r",
+							"// Pehla bookId save karo\r",
+							"if (books.length > 0) {\r",
+							"    pm.collectionVariables.set(\"bookId\", books[0].id);\r",
+							"    console.log(\"Saved bookId:\", books[0].id);\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/books",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03 - GET /books/:id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test 1: Status should be 200\r",
+							"pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r",
+							"\r",
+							"// Test 2: Returned id should match the saved bookId\r",
+							"pm.test(\"Returned id matches requested bookId\", () => {\r",
+							"  const json = pm.response.json();\r",
+							"  const returnedId = json.id;\r",
+							"  const expectedId = pm.collectionVariables.get(\"bookId\");\r",
+							"  pm.expect(String(returnedId)).to.eql(String(expectedId));\r",
+							"});\r",
+							"\r",
+							"console.log(\"Single book response:\", pm.response.json());\r",
+							"\r",
+							"// Intentional failing test (for assignment requirement)\r",
+							"pm.test(\"Deliberate failing test — book type is 'science'\", () => {\r",
+							"  pm.expect(pm.response.json().type).to.eql(\"science\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/books/{{bookId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"books",
+						"{{bookId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04 - POST /api-clients",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const r = Math.floor(Math.random() * 1000000);\r",
+							"pm.collectionVariables.set(\"clientName\", `PostmanClient-${r}`);\r",
+							"pm.collectionVariables.set(\"clientEmail\", `client${r}@example.com`);\r",
+							"\r",
+							"console.log(\"clientName & clientEmail set:\",\r",
+							"  pm.collectionVariables.get(\"clientName\"),\r",
+							"  pm.collectionVariables.get(\"clientEmail\"));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Register client status 201 or 200\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+							"});\r",
+							"\r",
+							"const j = pm.response.json();\r",
+							"const token = j.accessToken || j.token || j.access_token || j.access;\r",
+							"\r",
+							"pm.test(\"access token present\", () => {\r",
+							"  pm.expect(token, \"access token exists\").to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"if (token) {\r",
+							"  pm.collectionVariables.set(\"accessToken\", token);\r",
+							"  console.log(\"Saved accessToken:\", token);\r",
+							"} else {\r",
+							"  console.warn(\"Could not extract token from response:\", j);\r",
+							"}\r",
+							"\r",
+							"console.log(\"Register response:\", j);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"clientName\": \"{{clientName}}\",\r\n  \"clientEmail\": \"{{clientEmail}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api-clients?Content-Type=application/json",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api-clients"
+					],
+					"query": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05 - POST /orders",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const r = Math.floor(Math.random() * 1000000);\r",
+							"pm.collectionVariables.set(\"customerName\", `Cust-${r}`);\r",
+							"console.log(\"customerName:\", pm.collectionVariables.get(\"customerName\"));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Order create status 200 or 201\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+							"});\r",
+							"\r",
+							"const json = pm.response.json();\r",
+							"const orderId = json.orderId || json.id || json.order_id || json.order;\r",
+							"pm.test(\"order id exists\", () => {\r",
+							"  pm.expect(orderId).to.exist;\r",
+							"});\r",
+							"if (orderId) {\r",
+							"  pm.collectionVariables.set(\"orderId\", orderId);\r",
+							"  console.log(\"Captured orderId:\", orderId);\r",
+							"}\r",
+							"console.log(\"Order response body:\", json);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"bookId\": {{bookId}},\r\n  \"customerName\": \"{{customerName}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/orders",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06 - GET /orders/:id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get order returns 200\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Order id matches\", () => {\r",
+							"  const resp = pm.response.json();\r",
+							"  const returnedOrderId = resp.orderId || resp.id || resp.order_id || resp.order;\r",
+							"  pm.expect(String(returnedOrderId))\r",
+							"    .to.eql(String(pm.collectionVariables.get(\"orderId\")));\r",
+							"});\r",
+							"\r",
+							"console.log(\"Order details:\", pm.response.json());\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/orders/{{orderId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07 - PATCH /orders/:id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Patch order status OK\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200, 204]);\r",
+							"});\r",
+							"\r",
+							"const j = pm.response.json();\r",
+							"if (j && j.customerName) {\r",
+							"  pm.test(\"customerName updated\", () => {\r",
+							"    pm.expect(j.customerName).to.include(\"UpdatedName\");\r",
+							"  });\r",
+							"}\r",
+							"console.log(\"Patch response:\", j);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"customerName\": \"UpdatedName-{{orderId}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/orders/{{orderId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify Patch - GET /orders/:id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Order fetch OK\", () => {\r",
+							"  pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"const j = pm.response.json();\r",
+							"pm.test(\"Has orderId\", () => {\r",
+							"  pm.expect(j).to.have.property(\"id\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Has updated customerName\", () => {\r",
+							"  pm.expect(j.customerName).to.include(\"UpdatedName\");\r",
+							"});\r",
+							"\r",
+							"console.log(\"GET order response:\", j);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/orders/{{orderId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08 - DELETE /orders/:id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Delete returns 200 or 204\", () => {\r",
+							"  pm.expect(pm.response.code).to.be.oneOf([200,204]);\r",
+							"});\r",
+							"\r",
+							"console.log(\"Delete response code:\", pm.response.code);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/orders/{{orderId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify Delete – GET /orders/:id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Deleted order returns 404\", () => {\r",
+							"  pm.response.to.have.status(404);\r",
+							"});\r",
+							"console.log(\"Verification GET response:\", pm.response.json());\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/orders/{{orderId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "09 - PUT /posts/1 (alt)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"randomTitle\", \"Title-\" + Math.floor(Math.random() * 100000));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"PUT status 200\", () => pm.response.to.have.status(200));\r",
+							"const j = pm.response.json();\r",
+							"pm.test(\"response contains title\", () => {\r",
+							"  pm.expect(j.title).to.eql(pm.collectionVariables.get(\"randomTitle\"));\r",
+							"});\r",
+							"console.log(\"PUT response:\", j);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1,\r\n  \"title\": \"{{randomTitle}}\",\r\n  \"body\": \"This is a full update body\",\r\n  \"userId\": 1\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{altBaseUrl}}/posts/1",
+					"host": [
+						"{{altBaseUrl}}"
+					],
+					"path": [
+						"posts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": ""
+		},
+		{
+			"key": "altBaseUrl",
+			"value": ""
+		},
+		{
+			"key": "clientName",
+			"value": ""
+		},
+		{
+			"key": "clientEmail",
+			"value": ""
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "bookId",
+			"value": ""
+		},
+		{
+			"key": "orderId",
+			"value": ""
+		},
+		{
+			"key": "customerName",
+			"value": ""
+		},
+		{
+			"key": "randomTitle",
+			"value": ""
+		}
+	]
+}
